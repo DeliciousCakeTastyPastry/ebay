@@ -1,0 +1,8 @@
+#!/bin/bash
+itemnumber=$1
+id=MeganKre-71ab-4611-9fc8-68195808373e
+singleitemurla="http://open.api.ebay.com/shopping?callname=GetSingleItem&responseencoding=XML&appid="
+singleitemurlb="&siteid=0&version=515&ItemID="
+singleitemurlc="&IncludeSelector=Description"
+request=$singleitemurla$id$singleitemurlb$itemnumber$singleitemurlc
+echo $request
