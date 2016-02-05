@@ -10,12 +10,13 @@ $keywords = substr( $keywords, 0 , $len - 1 );
 #echo $keywords;
 
 mkdir($keywords);
+chdir($keywords);
 
 $url = "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&SECURITY-APPNAME=LaurensM-9ccd-4d15-8eba-9602a1a3f606&RESPONSE-DATA-FORMAT=XML&REST-PAYLOAD&keywords=$keywords";
 $response = file_get_contents($url);
 $xml = simplexml_load_string( $response );
 
-chdir($keywords);
+
 for ($i = 1; ; $i++) {
         if ($i > 100) {
                 break;
@@ -28,6 +29,8 @@ for ($i = 1; ; $i++) {
         $obj = new SimpleXMLElement($resp);
         $html = $obj->Item[0]->Description;
         $itemurl = $obj->Item[0]->PictureURL;
+	$html = strip_html_tags($html);
+	$html = replaceWhitespace($html);
         $html = preg_replace('~<\s*\bscript\b[^>]*>(.*?)<\s*\/\s*script\s*>~is', '', $html);
         $body = strip_tags($html);
         #$body = "<img src=\"$itemurl\">" . "$body";
@@ -36,4 +39,35 @@ for ($i = 1; ; $i++) {
 
 	file_put_contents($keywords . $i, $body);
 }
+
+function strip_html_tags($str){
+    $str = preg_replace('/(<|>)\1{2}/is', '', $str);
+    $str = preg_replace(
+        array(// Remove invisible content
+            '@<head[^>]*?>.*?</head>@siu',
+            '@<style[^>]*?>.*?</style>@siu',
+            '@<script[^>]*?.*?</script>@siu',
+            '@<noscript[^>]*?.*?</noscript>@siu',
+            ),
+        "", //replace above with nothing
+        $str );
+    $str = replaceWhitespace($str);
+    $str = strip_tags($str);
+    return $str;
+} //function strip_html_tags ENDS
+
+//To replace all types of whitespace with a single space
+function replaceWhitespace($str) {
+    $result = $str;
+    foreach (array(
+    "  ", " \t",  " \r",  " \n",
+    "\t\t", "\t ", "\t\r", "\t\n",
+    "\r\r", "\r ", "\r\t", "\r\n",
+    "\n\n", "\n ", "\n\t", "\n\r",
+    ) as $replacement) {
+    $result = str_replace($replacement, $replacement[0], $result);
+    }
+    return $str !== $result ? replaceWhitespace($result) : $result;
+}
+############################
 ?>
