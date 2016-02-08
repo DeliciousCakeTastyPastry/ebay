@@ -15,13 +15,9 @@ chdir($keywords);
 $url = "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&SECURITY-APPNAME=LaurensM-9ccd-4d15-8eba-9602a1a3f606&RESPONSE-DATA-FORMAT=XML&REST-PAYLOAD&keywords=$keywords";
 $response = file_get_contents($url);
 $xml = simplexml_load_string( $response );
+$count = $xml->searchResult[0]['count'];
 
-
-for ($i = 1; ; $i++) {
-        if ($i > 100) {
-                break;
-#                print_r("Done");
-        }
+for ($i = 0; $i < $count ; $i++) {
         $ItemID = $xml->searchResult->item[$i]->itemId;
         echo($ItemID);
         $singleitemurl = "http://open.api.ebay.com/shopping?callname=GetSingleItem&responseencoding=XML&appid=LaurensM-9ccd-4d15-8eba-9602a1a3f606&siteid=0&version=515&ItemID=" . "$ItemID" . "&IncludeSelector=Description,ItemSpecifics";
@@ -36,7 +32,6 @@ for ($i = 1; ; $i++) {
         #$body = "<img src=\"$itemurl\">" . "$body";
         $file = 'search.txt';
         file_put_contents($file, $body, FILE_APPEND | LOCK_EX);
-
 	file_put_contents($keywords . $i, $body);
 }
 
