@@ -16,7 +16,10 @@ $url = "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=fi
 $response = file_get_contents($url);
 $xml = simplexml_load_string( $response );
 $count = $xml->searchResult[0]['count'];
-
+echo "Number of results found: " . $count . "\n";
+if ($count < 100) {
+die("Too few results: $count \n");
+}
 for ($i = 0; $i < $count ; $i++) {
         $ItemID = $xml->searchResult->item[$i]->itemId;
         echo($ItemID);
