@@ -1,0 +1,1 @@
+./lol.sh hello > black.txt ; while read line; do echo ${line//hello/}; done < black.txt | sort | uniq | cut -f 1 -d" " | uniq
