@@ -1,5 +1,5 @@
 <?php
-
+$body = "";
 $numargs = count($argv);
 $keywords = "";
 for( $i = 1; $i < $numargs ; $i++ ) {
@@ -30,11 +30,20 @@ for ($i = 0; $i < $count ; $i++) {
         $obj = new SimpleXMLElement($resp);
         $html = $obj->Item[0]->Description;
         $itemurl = $obj->Item[0]->PictureURL;
+	$itempicture = file_get_contents($itemurl);
+	$randomnumber = rand();
+
+	$itemtitle = $obj->Item[0]->Title;
+	$savefile = fopen("/var/www/stephenpicardi.com/public_html/images/$itemtitle$randomnumber.jpg", 'w');
+	fwrite($savefile, $itempicture);
+        fclose($savefile);
+
 	$html = strip_html_tags($html);
 	$html = replaceWhitespace($html);
         $html = preg_replace('~<\s*\bscript\b[^>]*>(.*?)<\s*\/\s*script\s*>~is', '', $html);
         $body = strip_tags($html);
-        $body = "<img src=\"$itemurl\">" . "$body";
+	$body = "<h1> $itemtitle </h1>\n" . $body;
+        $body = "<img src=\"http://stephenpicardi.com/images/$itemtitle$randomnumber.jpg\">" . "$body";
         $file = 'search.txt';
 #        file_put_contents($file, $body, FILE_APPEND | LOCK_EX);
 	file_put_contents($keywords . $i, $body);
