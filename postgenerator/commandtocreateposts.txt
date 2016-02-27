@@ -1,0 +1,1 @@
+ ls > a ; while read line ; do php ~/am/wp-cli.phar post create ./$line --post_title="" --allow-root --path="/var/www/ledcanopylighting.xyz/public_html" --post_status=publish --post_type=post ; done < a ; rm a

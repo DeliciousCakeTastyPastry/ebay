@@ -1,5 +1,4 @@
 <?php
-$domain = "ledcanopylighting.xyz";
 $body = "";
 $numargs = count($argv);
 $keywords = "";
@@ -9,20 +8,18 @@ for( $i = 1; $i < $numargs ; $i++ ) {
 $len = strlen( $keywords);
 $keywords = substr( $keywords, 0 , $len - 1 );
 #echo $keywords;
-mkdir("output");
-chdir("output");
-
-mkdir("/var/www/$domain/public_html/images");
-
+#mkdir("output");
+#chdir("output");
 
 $url = "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&SECURITY-APPNAME=LaurensM-9ccd-4d15-8eba-9602a1a3f606&RESPONSE-DATA-FORMAT=XML&REST-PAYLOAD&keywords=$keywords";
 $response = file_get_contents($url);
 $xml = simplexml_load_string( $response );
 $count = $xml->searchResult[0]['count'];
 echo "Number of results found: " . $count . "\n";
-if ($count < 1) {
-die("Too few results: $count \n");
+if ($count != 100 ) {
+exit(1);
 }
+exit(0);
 mkdir($keywords);
 chdir($keywords);
 
@@ -38,8 +35,7 @@ for ($i = 0; $i < $count ; $i++) {
 	$randomnumber = rand();
 
 	$itemtitle = $obj->Item[0]->Title;
-	$itemtitle = str_replace('/', '', $itemtitle);
-	$savefile = fopen("/var/www/$domain/public_html/images/$itemtitle$randomnumber.jpg", 'w');
+	$savefile = fopen("/var/www/stephenpicardi.com/public_html/images/$itemtitle$randomnumber.jpg", 'w');
 	fwrite($savefile, $itempicture);
         fclose($savefile);
 
@@ -48,7 +44,7 @@ for ($i = 0; $i < $count ; $i++) {
         $html = preg_replace('~<\s*\bscript\b[^>]*>(.*?)<\s*\/\s*script\s*>~is', '', $html);
         $body = strip_tags($html);
 	$body = "<h1> $itemtitle </h1>\n" . $body;
-        $body = "<img src=\"http://$domain/images/$itemtitle$randomnumber.jpg\">" . "$body";
+        $body = "<img src=\"http://stephenpicardi.com/images/$itemtitle$randomnumber.jpg\">" . "$body";
         $file = 'search.txt';
 #        file_put_contents($file, $body, FILE_APPEND | LOCK_EX);
 	file_put_contents($keywords . $i, $body);
