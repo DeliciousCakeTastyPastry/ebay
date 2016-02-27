@@ -1,5 +1,5 @@
 <?php
-$domain = "ledcanopylighting.xyz";
+$domain = "lowbayledlighting.xyz";
 $body = "";
 $numargs = count($argv);
 $keywords = "";
@@ -25,7 +25,6 @@ die("Too few results: $count \n");
 }
 mkdir($keywords);
 chdir($keywords);
-
 for ($i = 0; $i < $count ; $i++) {
         $ItemID = $xml->searchResult->item[$i]->itemId;
         echo($ItemID);
@@ -34,11 +33,15 @@ for ($i = 0; $i < $count ; $i++) {
         $obj = new SimpleXMLElement($resp);
         $html = $obj->Item[0]->Description;
         $itemurl = $obj->Item[0]->PictureURL;
+
 	$itempicture = file_get_contents($itemurl);
 	$randomnumber = rand();
+#This line strips /, which is treated as a directory later when saving file
+$itemurl = str_replace("/", "", $itemurl);
 
 	$itemtitle = $obj->Item[0]->Title;
 	$itemtitle = str_replace('/', '', $itemtitle);
+
 	$savefile = fopen("/var/www/$domain/public_html/images/$itemtitle$randomnumber.jpg", 'w');
 	fwrite($savefile, $itempicture);
         fclose($savefile);
