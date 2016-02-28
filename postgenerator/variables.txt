@@ -1,0 +1,3 @@
+export keywords="lol wut"
+export domain="lolwut.xyz"
+export pathtoresults="output/lol+wut"
