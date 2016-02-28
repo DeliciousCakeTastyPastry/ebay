@@ -63,7 +63,7 @@ $itemurl = str_replace("/", "", $itemurl);
         $body = "<img src=\"http://$domain/images/$itemtitle$randomnumber.jpg\">" . "$body";
         $file = 'search.txt';
 #        file_put_contents($file, $body, FILE_APPEND | LOCK_EX);
-	file_put_contents($keywords . $i, $body);
+	file_put_contents($i . $keywords, $body);
 }
 
 function strip_html_tags($str){
