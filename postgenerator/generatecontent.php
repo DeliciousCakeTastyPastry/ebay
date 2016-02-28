@@ -14,6 +14,10 @@ chdir("output");
 
 mkdir("/var/www/$domain/public_html/images");
 
+if (file_exists("/tmp/titles.txt")) {
+                unlink("/tmp/titles.txt");
+                }
+
 
 $url = "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&SECURITY-APPNAME=LaurensM-9ccd-4d15-8eba-9602a1a3f606&RESPONSE-DATA-FORMAT=XML&REST-PAYLOAD&keywords=$keywords";
 $response = file_get_contents($url);
@@ -41,10 +45,15 @@ $itemurl = str_replace("/", "", $itemurl);
 
 	$itemtitle = $obj->Item[0]->Title;
 	$itemtitle = str_replace('/', '', $itemtitle);
-
+	
 	$savefile = fopen("/var/www/$domain/public_html/images/$itemtitle$randomnumber.jpg", 'w');
 	fwrite($savefile, $itempicture);
         fclose($savefile);
+	
+	$titlefile = fopen("/tmp/titles.txt", 'a');
+	$itemtitle = $itemtitle . "\n";
+	fwrite($titlefile, "$itemtitle");
+	fclose($titlefile);
 
 	$html = strip_html_tags($html);
 	$html = replaceWhitespace($html);
