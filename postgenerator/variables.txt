@@ -1,3 +1,0 @@
-export keywords="black hat"
-export domain="blackhat.xyz"
-export pathtoresults="output/black+hat"

@@ -9,8 +9,8 @@ for( $i = 1; $i < $numargs ; $i++ ) {
 $len = strlen( $keywords);
 $keywords = substr( $keywords, 0 , $len - 1 );
 #echo $keywords;
-mkdir("output");
-chdir("output");
+mkdir("/tmp/output");
+chdir("/tmp/output");
 
 mkdir("/var/www/$domain/public_html/images");
 
